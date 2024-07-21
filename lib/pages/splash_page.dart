@@ -1,7 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:my_health_data_worldskills/pages/login_page.dart';
+
+import 'login_page.dart';
 
 class SplashPage extends StatefulWidget {
   SplashPage({super.key});

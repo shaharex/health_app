@@ -1,45 +1,44 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 
-import '../components/my_button2.dart';
-import '../components/my_button3.dart';
-import 'alarm_page.dart';
-import 'home_page.dart';
+import '../my_button2.dart';
+import '../my_button3.dart';
 
-class NavigationPage extends StatefulWidget {
-  const NavigationPage({
-    Key? key,
-    required this.gender,
-    required this.username,
-    required this.height,
-    required this.weight,
-    required this.steps,
-    required this.water,
-  }) : super(key: key);
-
-  final String gender;
-  final String username;
-  final String height;
-  final String weight;
-  final String steps;
+class WaterArea extends StatefulWidget {
+  WaterArea({super.key, required this.water});
   final String water;
 
   @override
-  State<NavigationPage> createState() => _NavigationPageState();
+  State<WaterArea> createState() => _WaterAreaState();
 }
 
-class _NavigationPageState extends State<NavigationPage> {
-  int currentPageIndex = 0;
-
-  // controllers
+class _WaterAreaState extends State<WaterArea> {
   final TextEditingController _alarmHoursController = TextEditingController();
   final TextEditingController _alarmMinsController = TextEditingController();
+
+  // show water menu
+  void _showFoodMenu(BuildContext context) {
+    showMenu(
+        shadowColor: Colors.grey,
+        context: context,
+        position: const RelativeRect.fromLTRB(100, 550, 10, 10),
+        items: [
+          const PopupMenuItem(
+            height: 30,
+            value: 1,
+            child: Text('Add alarm'),
+          ),
+        ]).then((value) {
+      if (value == 1) {
+        _showAlarmInputBox(context);
+      }
+    });
+  }
 
   // show alarm input box
   void _showAlarmInputBox(BuildContext context) {
     bool isFoodsSelected = false;
-    bool isWaterSelected = false;
-    bool isOtherSelected = true;
+    bool isWaterSelected = true;
+    bool isOtherSelected = false;
     showDialog(
       context: context,
       builder: (context) {
@@ -107,7 +106,7 @@ class _NavigationPageState extends State<NavigationPage> {
                       ),
                     ),
 
-                    // others alarm type
+                    // heart rate alarm type
                     GestureDetector(
                       onTap: () {
                         setState(() {
@@ -152,14 +151,13 @@ class _NavigationPageState extends State<NavigationPage> {
                           TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
                     ),
                     SizedBox(
-                      width: 40,
-                      child: TextField(
-                        controller: _alarmMinsController,
-                        style: const TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.w800),
-                        keyboardType: TextInputType.number,
-                      ),
-                    ),
+                        width: 40,
+                        child: TextField(
+                          controller: _alarmMinsController,
+                          style: const TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.w800),
+                          keyboardType: TextInputType.number,
+                        )),
                     const Text(
                       'mins',
                       style:
@@ -201,100 +199,124 @@ class _NavigationPageState extends State<NavigationPage> {
     );
   }
 
+  int waterCurrent = 0;
+  void waterAdd(int waterAmount) {
+    setState(() {
+      waterCurrent += waterAmount;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        actions: [IconButton(onPressed: () {}, icon: Icon(Icons.more_vert))],
-        automaticallyImplyLeading: false,
-        toolbarHeight: 40,
-        iconTheme: const IconThemeData(color: Colors.white, size: 20),
-        backgroundColor: Colors.grey.shade900,
-        title: const Text(
-          'MY Health Data',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 15,
-          ),
-        ),
+    return Container(
+      width: double.infinity,
+      height: 90,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        color: Colors.grey.shade300,
       ),
-      body: [
-        HomePage(
-          gender: widget.gender,
-          username: widget.username,
-          height: widget.height,
-          weight: widget.weight,
-          steps: widget.steps,
-          water: widget.water,
-        ),
-        AlarmPage(),
-        const Center(child: Text('Coming soon...')),
-        const Center(child: Text('Coming soon...')),
-      ][currentPageIndex],
-      floatingActionButton: currentPageIndex == 1
-          ? FloatingActionButton(
-              shape: CircleBorder(),
-              backgroundColor: Colors.black,
-              onPressed: () => _showAlarmInputBox(context),
-              child: const Icon(
-                Icons.add,
-                color: Colors.white,
-              ),
-            )
-          : null,
-      bottomNavigationBar: NavigationBar(
-        // хорошая штука для контроля текста в NavigationBar, можно убрать текст если он тебе не нужен
-        labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
-        indicatorColor: Colors.transparent,
-        backgroundColor: Colors.grey.shade900,
-        onDestinationSelected: (index) {
-          setState(() {
-            currentPageIndex = index;
-          });
-        },
-        selectedIndex: currentPageIndex,
-        destinations: const [
-          NavigationDestination(
-              selectedIcon: Icon(
-                Icons.home,
-                color: Colors.white,
-              ),
-              icon: Icon(
-                Icons.home,
-                color: Colors.grey,
-              ),
-              label: 'Home'),
-          NavigationDestination(
-              selectedIcon: Icon(
-                Icons.alarm,
-                color: Colors.white,
-              ),
-              icon: Icon(
-                Icons.alarm,
-                color: Colors.grey,
-              ),
-              label: 'Alarm'),
-          NavigationDestination(
-              selectedIcon: Icon(
-                Icons.sports_gymnastics,
-                color: Colors.white,
-              ),
-              icon: Icon(
-                Icons.sports_gymnastics,
-                color: Colors.grey,
-              ),
-              label: 'Workout'),
-          NavigationDestination(
-            selectedIcon: Icon(
-              Icons.person,
-              color: Colors.white,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          Container(
+            height: 50,
+            width: 50,
+            decoration: const BoxDecoration(
+                color: Colors.white, shape: BoxShape.circle),
+            child: const Icon(
+              Icons.water_drop_outlined,
             ),
-            icon: Icon(
-              Icons.person,
-              color: Colors.grey,
-            ),
-            label: 'Profile',
           ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              RichText(
+                text: TextSpan(
+                  text: '${waterCurrent}',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 20,
+                  ),
+                  children: [
+                    TextSpan(
+                        text: ' / ${widget.water} ml',
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w300,
+                        ))
+                  ],
+                ),
+              ),
+              const SizedBox(
+                height: 5,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  MyButton2(
+                    text: '+ 100ml',
+                    onTap: () => waterAdd(100),
+                    width: 50,
+                    height: 20,
+                    textStyle: const TextStyle(
+                      fontWeight: FontWeight.w200,
+                      fontSize: 12,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(width: 5),
+                  MyButton2(
+                    text: '+ 250ml',
+                    onTap: () => waterAdd(250),
+                    width: 50,
+                    height: 20,
+                    textStyle: const TextStyle(
+                      fontWeight: FontWeight.w200,
+                      fontSize: 12,
+                      color: Colors.white,
+                    ),
+                  )
+                ],
+              ),
+            ],
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(
+                Icons.water,
+                color: Color.fromARGB(255, 33, 150, 243),
+              ),
+              const SizedBox(
+                height: 5,
+              ),
+              Container(
+                width: 45,
+                height: 20,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: Colors.grey,
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                child: const Text(
+                  '12.5 %',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              )
+            ],
+          ),
+          IconButton(
+            onPressed: () => _showFoodMenu(context),
+            icon: const Icon(
+              Icons.more_vert,
+              size: 30,
+            ),
+          )
         ],
       ),
     );

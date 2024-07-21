@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:my_health_data_worldskills/pages/navigation_page.dart';
 import 'package:my_health_data_worldskills/pages/splash_page.dart';
 
 void main() {

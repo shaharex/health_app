@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../components/my_button2.dart';
+import '../my_button2.dart';
 
 class HeartRateArea extends StatelessWidget {
   const HeartRateArea({super.key});

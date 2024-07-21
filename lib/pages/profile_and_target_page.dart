@@ -8,7 +8,9 @@ import 'package:my_health_data_worldskills/components/my_textfield.dart';
 import 'navigation_page.dart';
 
 class ProfileAndTargetPage extends StatefulWidget {
-  const ProfileAndTargetPage({super.key});
+  const ProfileAndTargetPage({super.key, required this.username});
+
+  final String username;
 
   @override
   State<ProfileAndTargetPage> createState() => _ProfileAndTargetPageState();
@@ -24,8 +26,8 @@ class _ProfileAndTargetPageState extends State<ProfileAndTargetPage> {
   final TextEditingController _waterController = TextEditingController();
 
   // input box
-  final TextEditingController _heightInputBoxController =
-      TextEditingController();
+  final TextEditingController _heightCmController = TextEditingController();
+  final TextEditingController _heightMMController = TextEditingController();
 
   @override
   void dispose() {
@@ -35,7 +37,8 @@ class _ProfileAndTargetPageState extends State<ProfileAndTargetPage> {
     _birthdayController.dispose();
     _stepsController.dispose();
     _waterController.dispose();
-    _heightController.dispose();
+    _heightCmController.dispose();
+    _heightMMController.dispose();
     super.dispose();
   }
 
@@ -45,6 +48,9 @@ class _ProfileAndTargetPageState extends State<ProfileAndTargetPage> {
 
   // show Height InputBox
   void _showHeightInputBox(BuildContext context) {
+    int heightCM = 0;
+    int heightMM = 0;
+    double heightTotal = 0;
     showModalBottomSheet(
         context: context,
         builder: (context) {
@@ -59,25 +65,38 @@ class _ProfileAndTargetPageState extends State<ProfileAndTargetPage> {
                   style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                 ),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Expanded(
+                    SizedBox(
+                      width: 60,
                       child: TextField(
-                        controller: _heightInputBoxController,
+                        controller: _heightCmController,
+                        style: const TextStyle(
+                            fontSize: 22, fontWeight: FontWeight.w800),
                         keyboardType: TextInputType.number,
-                        decoration: const InputDecoration(
-                          hintText: 'Your height',
-                        ),
                       ),
                     ),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 4),
-                      child: Text('cm'),
+                    const Text(
+                      '\n.',
+                      style:
+                          TextStyle(fontSize: 22, fontWeight: FontWeight.w800),
                     ),
+                    SizedBox(
+                        width: 60,
+                        child: TextField(
+                          controller: _heightMMController,
+                          style: const TextStyle(
+                              fontSize: 22, fontWeight: FontWeight.w800),
+                          keyboardType: TextInputType.number,
+                        )),
+                    const Text(
+                      'cm',
+                      style:
+                          TextStyle(fontSize: 22, fontWeight: FontWeight.w800),
+                    )
                   ],
                 ),
-                const SizedBox(
-                  height: 10,
-                ),
+                const SizedBox(height: 10),
                 Row(
                   children: [
                     Expanded(
@@ -98,8 +117,10 @@ class _ProfileAndTargetPageState extends State<ProfileAndTargetPage> {
                         text: 'Complete',
                         onTap: () {
                           setState(() {
-                            _heightController.text =
-                                _heightInputBoxController.text;
+                            heightCM = int.parse(_heightCmController.text);
+                            heightMM = int.parse(_heightMMController.text);
+                            heightTotal = heightCM + (heightMM * 0.1);
+                            _heightController.text = heightTotal.toString();
                           });
                           Navigator.pop(context);
                         },
@@ -446,9 +467,9 @@ class _ProfileAndTargetPageState extends State<ProfileAndTargetPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Hi, username',
-              style: TextStyle(fontSize: 24),
+            Text(
+              'Hi, ${widget.username}',
+              style: const TextStyle(fontSize: 24),
             ),
 
             // profile
@@ -484,7 +505,7 @@ class _ProfileAndTargetPageState extends State<ProfileAndTargetPage> {
                     setState(() {
                       isActiveFemale = true;
                       isActiveMale = false;
-                      chosenGender = 'Female';
+                      chosenGender = 'female';
                     });
                   },
                 ),
@@ -582,15 +603,15 @@ class _ProfileAndTargetPageState extends State<ProfileAndTargetPage> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => NavigationPage(
-                              // gender: chosenGender,
-                              // username: _userNameController.text,
-                              // height: _heightController.text,
-                              // weight: _weightController.text,
-                              // birthday: _birthdayController.text,
-                              // steps: _stepsController.text,
-                              // water: _waterController.text,
-                              )));
+                        builder: (context) => NavigationPage(
+                          gender: chosenGender,
+                          username: _userNameController.text.trim(),
+                          height: _heightController.text.trim(),
+                          weight: _weightController.text.trim(),
+                          steps: _stepsController.text.trim(),
+                          water: _waterController.text.trim(),
+                        ),
+                      ));
                 } else {
                   ScaffoldMessenger.of(context)
                       .showSnackBar(SnackBar(content: Text('Fill all fields')));

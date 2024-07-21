@@ -1,10 +1,24 @@
 import 'package:flutter/material.dart';
 
 class CompetitorInfoArea extends StatelessWidget {
-  const CompetitorInfoArea({super.key});
+  CompetitorInfoArea({
+    super.key,
+    required this.gender,
+    required this.height,
+    required this.weight,
+  });
+
+  final String gender;
+  final String height;
+  final String weight;
 
   @override
   Widget build(BuildContext context) {
+    double bmiHeight = double.parse(height) * 0.01;
+    double bmiWeight = double.parse(weight);
+
+    double bmiResult = bmiWeight / (bmiHeight * bmiHeight);
+
     return Container(
       width: double.infinity,
       height: 90,
@@ -16,8 +30,8 @@ class CompetitorInfoArea extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const Icon(
-            Icons.man,
+          Icon(
+            gender == 'male' ? Icons.man : Icons.woman,
             size: 60,
           ),
           const SizedBox(
@@ -25,7 +39,7 @@ class CompetitorInfoArea extends StatelessWidget {
           ),
           Column(
             children: [
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               // height weight bmi values
@@ -38,13 +52,13 @@ class CompetitorInfoArea extends StatelessWidget {
                     Column(
                       children: [
                         Text(
-                          '182',
-                          style: TextStyle(
+                          height,
+                          style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                        Text(
+                        const Text(
                           'cm',
                           style: TextStyle(fontSize: 18),
                         ),
@@ -52,7 +66,7 @@ class CompetitorInfoArea extends StatelessWidget {
                     ),
 
                     Container(
-                      margin: EdgeInsets.symmetric(horizontal: 5),
+                      margin: const EdgeInsets.symmetric(horizontal: 5),
                       width: 1,
                       height: 35,
                       color: Colors.black,
@@ -62,13 +76,13 @@ class CompetitorInfoArea extends StatelessWidget {
                     Column(
                       children: [
                         Text(
-                          '80.5',
-                          style: TextStyle(
+                          weight,
+                          style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                        Text(
+                        const Text(
                           'kg',
                           style: TextStyle(fontSize: 18),
                         ),
@@ -76,7 +90,7 @@ class CompetitorInfoArea extends StatelessWidget {
                     ),
 
                     Container(
-                      margin: EdgeInsets.symmetric(horizontal: 5),
+                      margin: const EdgeInsets.symmetric(horizontal: 5),
                       width: 1,
                       height: 35,
                       color: Colors.black,
@@ -85,13 +99,13 @@ class CompetitorInfoArea extends StatelessWidget {
                     Column(
                       children: [
                         Text(
-                          '1',
-                          style: TextStyle(
+                          bmiResult.toString().substring(0, 4),
+                          style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                        Text(
+                        const Text(
                           'bmi',
                           style: TextStyle(fontSize: 18),
                         ),
@@ -109,7 +123,7 @@ class CompetitorInfoArea extends StatelessWidget {
                 width: 220,
                 height: 15,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5),
+                  borderRadius: BorderRadius.circular(15),
                   gradient: const LinearGradient(
                     begin: Alignment.topRight,
                     end: Alignment.bottomLeft,

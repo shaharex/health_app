@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:my_health_data_worldskills/components/my_button1.dart';
 import 'package:my_health_data_worldskills/components/my_button2.dart';
 import 'package:my_health_data_worldskills/components/my_button3.dart';
 import 'package:my_health_data_worldskills/components/my_textfield.dart';
 
+import '../services/user.dart';
 import 'profile_and_target_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -14,14 +17,67 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  // sign in controllers
   final TextEditingController _userNameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  // coming soon
   void _comingSoonSnackBar(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
       content: Text('Coming soon...'),
       duration: Duration(seconds: 1),
     ));
+  }
+
+  // auth API
+  late Future<List<User>> userFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    userFuture = getUser(context);
+  }
+
+  static Future<List<User>> getUser(BuildContext context) async {
+    final assetBundle = DefaultAssetBundle.of(context);
+    final data = await assetBundle.loadString('/auth.json');
+
+    final body = jsonDecode(data);
+    return body.map<User>((json) => User.fromJson(json)).toList();
+  }
+
+  bool _isSignedIn = false;
+
+  void signIn() {
+    userFuture.then((users) {
+      final username = _userNameController.text;
+      final password = _passwordController.text;
+
+      final user = users.firstWhere(
+        (user) =>
+            user.mberId == username && user.mberPassword.toString() == password,
+      );
+
+      if (user != null) {
+        setState(() {
+          _isSignedIn = true;
+        });
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ProfileAndTargetPage(
+                      username: user.mberId,
+                    )));
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Invalid username or password'),
+        ));
+      }
+    }).catchError((error) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Fill the form with correct information'),
+      ));
+    });
   }
 
   @override
@@ -85,12 +141,7 @@ class _LoginPageState extends State<LoginPage> {
                   // sign in button
                   MyButton1(
                     text: 'Sign in',
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ProfileAndTargetPage()));
-                    },
+                    onTap: signIn,
                   ),
                 ],
               ),

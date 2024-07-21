@@ -1,12 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:my_health_data_worldskills/areas/competitor_info_area.dart';
-import 'package:my_health_data_worldskills/areas/foods_area.dart';
-import 'package:my_health_data_worldskills/areas/heart_rate_area.dart';
-import 'package:my_health_data_worldskills/areas/steps_area.dart';
-import 'package:my_health_data_worldskills/areas/water_area.dart';
+import 'package:my_health_data_worldskills/components/areas/competitor_info_area.dart';
+import 'package:my_health_data_worldskills/components/areas/foods_area.dart';
+import 'package:my_health_data_worldskills/components/areas/heart_rate_area.dart';
+import 'package:my_health_data_worldskills/components/areas/steps_area.dart';
+import 'package:my_health_data_worldskills/components/areas/water_area.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  HomePage({
+    super.key,
+    required this.gender,
+    required this.username,
+    required this.height,
+    required this.weight,
+    required this.steps,
+    required this.water,
+  });
+
+  final String gender;
+  final String username;
+  final String height;
+  final String weight;
+  final String steps;
+  final String water;
 
   @override
   Widget build(BuildContext context) {
@@ -17,18 +32,22 @@ class HomePage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // hello part
-          const Text(
-            'Hello, Competitor99',
-            style: TextStyle(fontSize: 22),
+          Text(
+            'Hello, $username',
+            style: const TextStyle(fontSize: 22),
           ),
-          CompetitorInfoArea(),
+          CompetitorInfoArea(
+            gender: gender,
+            height: height,
+            weight: weight,
+          ),
 
           // steps part
           const Text(
             'Steps',
             style: TextStyle(fontSize: 22),
           ),
-          StepsArea(),
+          StepsArea(steps: steps),
 
           // heart rate
           const Text(
@@ -49,7 +68,9 @@ class HomePage extends StatelessWidget {
             'Water',
             style: TextStyle(fontSize: 22),
           ),
-          WaterArea(),
+          WaterArea(
+            water: water,
+          ),
         ],
       ),
     );
